@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Generated media assets
+storage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store

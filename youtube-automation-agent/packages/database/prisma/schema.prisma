@@ -1,0 +1,340 @@
+// YouTube Automation Agent - database schema
+// Two domains live here:
+//   1. Free API Hunter  - discovered free/public APIs and hunter runs
+//   2. YouTube pipeline - niches, channels, ideas, videos, assets, analytics
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Free API Hunter
+// ---------------------------------------------------------------------------
+
+enum ApiCategory {
+  YOUTUBE_DATA
+  TEXT_GENERATION
+  TEXT_TO_SPEECH
+  IMAGE_GENERATION
+  VIDEO_GENERATION
+  THUMBNAIL
+  SEO_KEYWORDS
+  SOCIAL_MEDIA
+  TRANSCRIPTION
+  MUSIC_AUDIO
+  OTHER
+}
+
+enum FreeTierQuality {
+  UNKNOWN
+  POOR
+  LIMITED
+  GOOD
+  EXCELLENT
+}
+
+enum ApiStatus {
+  DISCOVERED // found by the hunter, basic metadata only
+  ANALYZED // README parsed, endpoints extracted, scored
+  VERIFIED // a human (or probe) confirmed the API works
+  INTEGRATED // wired into the automation pipeline
+  DEPRECATED // superseded or unmaintained
+  BROKEN // confirmed not working
+}
+
+model DiscoveredApi {
+  id           String  @id @default(cuid())
+  githubRepoId BigInt  @unique
+  fullName     String  @unique // e.g. "owner/repo"
+  name         String
+  description  String?
+  url          String // GitHub URL
+  homepage     String?
+
+  category ApiCategory
+  stars    Int         @default(0)
+  forks    Int         @default(0)
+  openIssues Int       @default(0)
+  license  String?
+  language String?
+  topics   String[]    @default([])
+
+  lastCommitAt DateTime?
+  archived     Boolean   @default(false)
+
+  // Analysis results
+  docsQualityScore Float           @default(0) // 0..100
+  freeTierQuality  FreeTierQuality @default(UNKNOWN)
+  freeTierNotes    String?
+  rateLimitNotes   String?
+  readmeExcerpt    String?
+
+  // Ranking
+  reliabilityScore Float @default(0) // 0..100
+  usefulnessScore  Float @default(0) // 0..100
+  overallScore     Float @default(0) // 0..100
+
+  status ApiStatus @default(DISCOVERED)
+
+  endpoints     ApiEndpoint[]
+  usageExamples ApiUsageExample[]
+
+  firstSeenAt   DateTime @default(now())
+  lastCheckedAt DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([overallScore])
+  @@index([stars])
+  @@index([lastCommitAt])
+  @@index([freeTierQuality])
+  @@index([status])
+}
+
+model ApiEndpoint {
+  id           String  @id @default(cuid())
+  apiId        String
+  method       String  @default("GET")
+  url          String
+  description  String?
+  requiresAuth Boolean @default(false)
+  source       String  @default("readme") // readme | openapi | manual
+
+  api DiscoveredApi @relation(fields: [apiId], references: [id], onDelete: Cascade)
+
+  @@unique([apiId, method, url])
+  @@index([apiId])
+}
+
+model ApiUsageExample {
+  id       String @id @default(cuid())
+  apiId    String
+  language String @default("bash")
+  code     String
+  source   String @default("readme")
+
+  api DiscoveredApi @relation(fields: [apiId], references: [id], onDelete: Cascade)
+
+  @@index([apiId])
+}
+
+enum HunterRunStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model HunterRun {
+  id              String          @id @default(cuid())
+  status          HunterRunStatus @default(RUNNING)
+  categories      ApiCategory[]
+  queriesExecuted Int             @default(0)
+  reposScanned    Int             @default(0)
+  apisDiscovered  Int             @default(0)
+  apisUpdated     Int             @default(0)
+  errorLog        Json?
+  startedAt       DateTime        @default(now())
+  finishedAt      DateTime?
+
+  @@index([startedAt])
+}
+
+// ---------------------------------------------------------------------------
+// YouTube automation pipeline
+// ---------------------------------------------------------------------------
+
+model Niche {
+  id                 String   @id @default(cuid())
+  name               String   @unique
+  description        String
+  cpmEstimateLowUsd  Float    @default(0)
+  cpmEstimateHighUsd Float    @default(0)
+  competitionScore   Float    @default(0) // 0..100 (lower = less competition)
+  searchDemandScore  Float    @default(0) // 0..100
+  trendScore         Float    @default(0) // 0..100
+  overallScore       Float    @default(0) // 0..100
+  contentFormats     String[] @default([])
+  exampleTitles      String[] @default([])
+  rationale          String?
+
+  channels  Channel[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([overallScore])
+}
+
+model Channel {
+  id               String  @id @default(cuid())
+  name             String
+  description      String?
+  youtubeChannelId String?
+  nicheId          String?
+  timezone         String  @default("UTC")
+
+  niche  Niche?  @relation(fields: [nicheId], references: [id])
+  ideas  VideoIdea[]
+  videos Video[]
+  analytics AnalyticsSnapshot[]
+  recommendations Recommendation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum IdeaStatus {
+  PROPOSED
+  APPROVED
+  REJECTED
+  USED
+}
+
+model VideoIdea {
+  id        String     @id @default(cuid())
+  channelId String
+  title     String
+  angle     String
+  hook      String
+  keywords  String[]   @default([])
+  score     Float      @default(0)
+  status    IdeaStatus @default(PROPOSED)
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  videos  Video[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([channelId])
+}
+
+enum VideoStatus {
+  IDEA
+  SCRIPTED
+  VOICED
+  RENDERED
+  THUMBNAILED
+  OPTIMIZED
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+model Video {
+  id          String      @id @default(cuid())
+  channelId   String
+  ideaId      String?
+  title       String
+  description String?
+  tags        String[]    @default([])
+  status      VideoStatus @default(IDEA)
+
+  scheduledAt    DateTime?
+  publishedAt    DateTime?
+  youtubeVideoId String?
+  seoMetadata    Json?
+
+  channel Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  idea    VideoIdea? @relation(fields: [ideaId], references: [id])
+  script  Script?
+  assets  Asset[]
+  analytics AnalyticsSnapshot[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([channelId])
+  @@index([status])
+}
+
+model Script {
+  id                   String @id @default(cuid())
+  videoId              String @unique
+  content              String
+  hook                 String?
+  sections             Json?
+  wordCount            Int    @default(0)
+  estimatedDurationSec Int    @default(0)
+  provider             String?
+  model                String?
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AssetKind {
+  VOICEOVER
+  VIDEO
+  THUMBNAIL
+  MUSIC
+  SUBTITLE
+}
+
+model Asset {
+  id       String    @id @default(cuid())
+  videoId  String
+  kind     AssetKind
+  path     String // local path or remote URL
+  provider String?
+  metadata Json?
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([videoId])
+}
+
+model AnalyticsSnapshot {
+  id        String  @id @default(cuid())
+  channelId String
+  videoId   String?
+
+  capturedAt         DateTime @default(now())
+  views              Int      @default(0)
+  impressions        Int      @default(0)
+  clickThroughRate   Float    @default(0)
+  avgViewDurationSec Float    @default(0)
+  watchTimeMinutes   Float    @default(0)
+  subscribersGained  Int      @default(0)
+  estimatedRevenueUsd Float   @default(0)
+  raw                Json?
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  video   Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([channelId, capturedAt])
+  @@index([videoId, capturedAt])
+}
+
+enum RecommendationStatus {
+  OPEN
+  ACCEPTED
+  DISMISSED
+  DONE
+}
+
+model Recommendation {
+  id        String               @id @default(cuid())
+  channelId String
+  type      String // e.g. "title", "upload-time", "topic", "thumbnail"
+  title     String
+  body      String
+  priority  Int                  @default(3) // 1 (highest) .. 5 (lowest)
+  status    RecommendationStatus @default(OPEN)
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([channelId, status])
+}
