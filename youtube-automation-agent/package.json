@@ -1,0 +1,30 @@
+{
+  "name": "youtube-automation-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Intelligent agent system that automates faceless YouTube channel creation and management, with a built-in Free API Hunter that discovers and ranks free/public APIs from GitHub.",
+  "license": "MIT",
+  "packageManager": "npm@10.9.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "npm run db:generate -w @yta/database",
+    "db:migrate": "npm run db:migrate -w @yta/database",
+    "db:push": "npm run db:push -w @yta/database",
+    "db:seed": "npm run db:seed -w @yta/database",
+    "hunter:run": "npm run hunter:run -w @yta/api",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
