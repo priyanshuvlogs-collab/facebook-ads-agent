@@ -1,0 +1,49 @@
+# Plug-and-play business profile: B2B SaaS
+business:
+  name: "FlowMetric"
+  industry: saas
+  website: https://flowmetric.example.com
+  description: "Analytics platform that shows agencies exactly which campaigns make money."
+  unique_selling_points:
+    - "Connects to 40+ ad platforms in one click"
+    - "Client-ready reports generated automatically"
+    - "Teams save ~9 hours/week on reporting"
+
+offer:
+  lead_magnet: "free Agency Reporting Toolkit (12 templates)"
+  headline_offer: "free 14-day trial -- no credit card"
+  urgency: "Toolkit free for a limited time."
+
+targeting:
+  countries: [US, CA, GB, AU]
+  age_min: 24
+  age_max: 55
+  interests:
+    - "Digital marketing"
+    - "Google Ads"
+    - "Marketing agency"
+
+budget:
+  daily_budget: 150
+  currency: USD
+  max_cpl: 40
+
+lead_form:
+  privacy_policy_url: https://flowmetric.example.com/privacy
+  questions: [FULL_NAME, WORK_EMAIL, COMPANY_NAME, JOB_TITLE]
+  custom_questions:
+    - "How many clients does your agency manage?"
+  thank_you_message: "Toolkit sent! Check your inbox (and spam folder, just in case)."
+  follow_up_url: https://flowmetric.example.com/trial
+
+brand:
+  tone: professional
+
+optimization:
+  min_leads_before_judgement: 5
+  kill_multiplier: 1.5
+  scale_step_pct: 30
+  max_daily_budget: 500
+
+lead_scoring:
+  hot_keywords: ["10+", "20+", enterprise, agency]
