@@ -1,0 +1,55 @@
+# Plug-and-play business profile: local dental clinic
+business:
+  name: "BrightSmile Dental"
+  industry: dental
+  website: https://brightsmile.example.com
+  description: "Family and cosmetic dentistry clinic in Austin with same-week appointments."
+  unique_selling_points:
+    - "Same-week appointments, evenings and Saturdays"
+    - "0% financing on treatment plans"
+    - "4.9-star rating from 800+ patients"
+
+offer:
+  headline_offer: "free new-patient exam + X-rays ($180 value)"
+  urgency: "Only 20 new-patient slots open this month."
+  guarantees:
+    - "No surprise billing -- written quote before any treatment"
+
+targeting:
+  cities:
+    - { name: "Austin", key: "2418046", radius_km: 30 }
+  age_min: 25
+  age_max: 60
+  interests:
+    - "Teeth whitening"
+    - "Dental implant"
+
+budget:
+  daily_budget: 60
+  currency: USD
+  max_cpl: 18
+
+lead_form:
+  privacy_policy_url: https://brightsmile.example.com/privacy
+  questions: [FULL_NAME, EMAIL, PHONE]
+  custom_questions:
+    - "What treatment are you most interested in?"
+  thank_you_message: "Thanks! Our front desk will call you within one business day."
+  follow_up_url: https://brightsmile.example.com/book
+
+brand:
+  tone: friendly
+  image_urls:
+    - https://brightsmile.example.com/ads/smile-1.jpg
+    - https://brightsmile.example.com/ads/team.jpg
+
+optimization:
+  min_leads_before_judgement: 5
+  kill_multiplier: 1.5
+  scale_step_pct: 20
+  scale_trigger: 0.7
+  max_daily_budget: 150
+
+lead_scoring:
+  hot_keywords: [implant, invisalign, veneers, whitening]
+  require_phone: true

@@ -1,0 +1,49 @@
+# Plug-and-play business profile: residential real estate team
+business:
+  name: "Sunrise Realty Group"
+  industry: real_estate
+  website: https://sunriserealty.example.com
+  description: "Boutique realty team helping first-time buyers and sellers in the Phoenix metro."
+  unique_selling_points:
+    - "Average sale 4% above list price"
+    - "Free staging and pro photography for every listing"
+    - "150+ homes closed last year"
+
+offer:
+  headline_offer: "free instant home valuation"
+  lead_magnet: "2026 Phoenix Neighborhood Price Report (PDF)"
+  urgency: "Valuations booked this week get a bonus market-timing consult."
+
+targeting:
+  cities:
+    - { name: "Phoenix", key: "2490383", radius_km: 50 }
+  age_min: 28
+  age_max: 65
+  interests:
+    - "Home ownership"
+    - "Moving company"
+
+budget:
+  daily_budget: 100
+  currency: USD
+  max_cpl: 30
+
+lead_form:
+  privacy_policy_url: https://sunriserealty.example.com/privacy
+  questions: [FULL_NAME, EMAIL, PHONE, ZIP]
+  custom_questions:
+    - "Are you looking to buy, sell, or both?"
+    - "What's your timeline?"
+  thank_you_message: "Got it! Your valuation is being prepared -- expect a call within 24h."
+
+brand:
+  tone: professional
+
+optimization:
+  min_leads_before_judgement: 4
+  kill_multiplier: 1.6
+  scale_step_pct: 25
+  max_daily_budget: 300
+
+lead_scoring:
+  hot_keywords: [sell, selling, "3 months", asap, cash]

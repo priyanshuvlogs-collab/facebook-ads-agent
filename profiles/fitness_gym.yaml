@@ -1,0 +1,52 @@
+# Plug-and-play business profile: fitness studio / gym
+business:
+  name: "IronPeak Fitness"
+  industry: gym
+  website: https://ironpeak.example.com
+  description: "Group training gym with coach-led small classes and nutrition support."
+  unique_selling_points:
+    - "Coach-led classes capped at 12 people"
+    - "Custom nutrition plan included with membership"
+    - "Members lose 6kg on average in the first 90 days"
+
+offer:
+  headline_offer: "free 7-day trial + body composition scan"
+  urgency: "January challenge starts soon -- 15 trial spots left."
+  guarantees:
+    - "Cancel anytime during the trial, zero charge"
+
+targeting:
+  cities:
+    - { name: "Denver", key: "2419399", radius_km: 20 }
+  age_min: 20
+  age_max: 50
+  interests:
+    - "CrossFit"
+    - "Bodybuilding"
+    - "Meal preparation"
+
+budget:
+  daily_budget: 45
+  currency: USD
+  max_cpl: 12
+
+lead_form:
+  privacy_policy_url: https://ironpeak.example.com/privacy
+  questions: [FULL_NAME, EMAIL, PHONE]
+  custom_questions:
+    - "What's your #1 fitness goal right now?"
+  thank_you_message: "You're in! A coach will text you to book your first session."
+
+brand:
+  tone: bold
+  image_urls:
+    - https://ironpeak.example.com/ads/class.jpg
+
+optimization:
+  min_leads_before_judgement: 6
+  kill_multiplier: 1.4
+  scale_step_pct: 20
+  max_daily_budget: 120
+
+lead_scoring:
+  hot_keywords: [weight, strength, wedding, summer]

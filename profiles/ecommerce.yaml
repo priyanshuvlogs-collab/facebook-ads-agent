@@ -1,0 +1,47 @@
+# Plug-and-play business profile: e-commerce (email/lead capture with discount)
+business:
+  name: "Loom & Leaf Home"
+  industry: ecommerce
+  website: https://loomandleaf.example.com
+  description: "Sustainable home textiles -- organic cotton bedding, throws and towels."
+  unique_selling_points:
+    - "GOTS-certified organic cotton"
+    - "Free shipping and 100-night trial"
+    - "Carbon-neutral delivery"
+
+offer:
+  headline_offer: "15% off your first order"
+  lead_magnet: "early access to seasonal drops"
+  urgency: "Welcome offer expires 48h after signup."
+
+targeting:
+  countries: [US]
+  age_min: 25
+  age_max: 55
+  genders: all
+  interests:
+    - "Sustainable living"
+    - "Interior design"
+
+budget:
+  daily_budget: 80
+  currency: USD
+  max_cpl: 5
+
+lead_form:
+  privacy_policy_url: https://loomandleaf.example.com/privacy
+  questions: [EMAIL]
+  thank_you_message: "Your 15% code is on its way to your inbox!"
+  follow_up_url: https://loomandleaf.example.com/shop
+
+brand:
+  tone: playful
+
+optimization:
+  min_leads_before_judgement: 15
+  kill_multiplier: 1.6
+  scale_step_pct: 25
+  max_daily_budget: 250
+
+lead_scoring:
+  hot_keywords: []
