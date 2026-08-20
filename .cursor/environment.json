@@ -1,0 +1,4 @@
+{
+  "name": "Facebook Ads Agent",
+  "install": "pip install --user -r requirements.txt pytest"
+}
